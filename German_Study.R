@@ -13,7 +13,7 @@
 #--------------------------------------------------------------------------------#
 #
 #--------------------------------------------------------------------------------#
-# Risco de Crédito
+#                           RISCO DE CRÉDITO
 #--------------------------------------------------------------------------------#
 # O que é um default de crédito?
 #  Um default de crédito ocorre quando um tomador de empréstimo não honra a sua obrigação de pagamento gerando uma perda para o emprestante (normalmente um banco).
@@ -30,7 +30,7 @@
 #  Comportamentais: saldo atual da conta corrente, prestações de empréstimos ou contas anteriores em atraso
 #
 #--------------------------------------------------------------------------------#
-# Concessão de Crédito
+#                         CONCESSÃO DE CRÉTIDO
 #--------------------------------------------------------------------------------#
 # Um gerente de empréstimo quer desenvolver um modelo que forneça a probabilidade 
 #   de um cliente em potencial ficar inadimplente. 
@@ -63,10 +63,10 @@
 #      "bad credit risk".
 #
 #--------------------------------------------------------------------------------#
-# Desenvolvimento do Modelo
+#                       DESENVOLVIMENTO DO MODELO
 #--------------------------------------------------------------------------------#
 # Divida os dados aleatoriamente entre treino (70%) e validação (30%) 
-#    e desenvolva modelos de classificação a partir das seguintes técnicas:
+#   e desenvolva modelos de classificação a partir das seguintes técnicas:
 #
 #  - Escolha intuitiva das variáveis de entrada
 #  - Correlação individual das variáveis de entrada com a variável de resultado 
@@ -76,7 +76,8 @@
 #  - Opcional: Redes neurais (utilize a ***keras***)
 #--------------------------------------------------------------------------------#
 # Para cada um dos modelos, determine a probabilidade de corte ótima, isto é, 
-#   o nível de corte para o qual o lucro obtido no conjunto de validação é máximo (vide a seguir). 
+#   o nível de corte para o qual o lucro obtido no conjunto de validação 
+#   é máximo (vide a seguir). 
 #
 #  - Classifique os dados  de validação de acordo com a probabilidade prevista de sucesso.
 #  - Para cada caso, calcule o custo/lucro de extender o crédito para este aplicante.
@@ -84,27 +85,51 @@
 #  - Até qual aplicante deve-se ir para obter o maior lucro possível? 
 #      Especifique este nível em percentis.
 #  - Se este modelo for aplicado para novos créditos, 
-#       qual probabilidade de corte deverá ser utilizada para a concessão (ou não) do crédito?
+#      qual probabilidade de corte deverá ser utilizada para a concessão 
+#      (ou não) do crédito?
+#
 #--------------------------------------------------------------------------------#
+#                           RELATÓRIO FINAL
 #--------------------------------------------------------------------------------#
+# Os resultados deverão ser apresentados em um relatório de no máximo 5 páginas 
+#   no seguinte formato:
+#  - Resumo
+#  - Contexto:
+#     - Definições de negócio para o caso
+#     - Produto a ser ofertado
+#     - Análise de variáveis
+#     - Modelos desenvolvivos
+#     - Resultados estatísticos e de negócios
+#     - Modelo escolhido
+#  - Conclusão
+#
+# A apresentação do relatório deverá ser feita em até 10 min, contendo as 
+#   seguintes informações:
+#  - Problema de negócios
+#  - Modelos analisados e resultados financeiros
+#  - Modelo escolhido
+#
+# Códigos
+#  - Deverá ser fornecido ou um jupyter notebook ou um script R ou Rmd, 
+#      com o código comentado.
 #--------------------------------------------------------------------------------#
+#                         FIM DO ENUNCIADO
 #--------------------------------------------------------------------------------#
-
 
 library(summarytools)
 
-
-# Vamos analisar um modelo com variáveis categóricas de entrada
 # file = "german_data.csv"
 # dic = "german_dicionario.csv"
 file = file.choose()
 dd = read.csv2(file)
 names(dd)
 head(dd)
-class(dd)
+
 
 #--------------------------------------------------------------------------------#
-# Variáveis CONTINUAS
+#                          ANÁLISE DAS VARIÁVEIS
+#--------------------------------------------------------------------------------#
+#                           Variáveis CONTÍNUAS
 #--------------------------------------------------------------------------------#
 
 # Variavel duration - meses com credito ativo
@@ -165,7 +190,9 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 
 
 #--------------------------------------------------------------------------------#
-# Variáveis CATEGORICAS
+#                          ANÁLISE DAS VARIÁVEIS
+#--------------------------------------------------------------------------------#
+#                          Variáveis CATEGÓRICAS
 #--------------------------------------------------------------------------------#
 
 # Variavel chk_acc - Conta Corrente

@@ -28,7 +28,8 @@
 #
 # Informações utilizadas pelos bancos para quantificar o risco de crédito:
 #  Pessoais do aplicante: renda, estado civil…
-#  Comportamentais: saldo atual da conta corrente, prestações de empréstimos ou contas anteriores em atraso
+#  Comportamentais: saldo atual da conta corrente, prestações de empréstimos ou 
+#    contas anteriores em atraso
 #
 #--------------------------------------------------------------------------------#
 #                         CONCESSÃO DE CRÉTIDO
@@ -70,7 +71,8 @@
 #   e desenvolva modelos de classificação a partir das seguintes técnicas:
 #
 #  - Escolha intuitiva das variáveis de entrada
-#  - Correlação individual das variáveis de entrada com a variável de resultado (***Excel***, R ou a sciki-learn)
+#  - Correlação individual das variáveis de entrada com a
+#      variável de resultado (***Excel***, R ou a sciki-learn)
 #  - Análise discriminatória linear (***Excel***, ***R*** ou a scikit-learn)
 #  - Regressão logística (Excel, ***R*** ou a scikit-learn)
 #  - Opcional: Redes neurais (utilize a ***keras***)
@@ -117,7 +119,8 @@
 #--------------------------------------------------------------------------------#
 
 library(summarytools)
-library(dplyr)
+
+
 
 # file = "german_data.csv"
 # dic = "german_dicionario.csv"
@@ -125,6 +128,7 @@ file = file.choose()
 dd = read.csv2(file)
 names(dd)
 head(dd)
+class(dd)
 
 
 #--------------------------------------------------------------------------------#
@@ -136,57 +140,92 @@ head(dd)
 # Variavel duration - meses com credito ativo
 dfSummary(dd$duration)
 summary(dd$duration)
-par(mfrow=c(1,2))
-boxplot(dd$duration, main="", col = 7)
+par(mfrow=c(1,3))
 hist(dd$duration, main="",xlab = "", col = 7)
+boxplot(dd$duration,  main="", col = 7)
+dview = dd[,c(2,21)]
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, duration~response,  main="", col = 7)
 mtext("Duration - Meses com crédito ativo", side = 3, line = -2, outer = TRUE)
+
 
 # Variável amount - Crédito concedido
 dfSummary(dd$amount)
 summary(dd$amount)
-par(mfrow=c(1,2))
-boxplot(dd$amount, main="", col = 7)
+par(mfrow=c(1,3))
 hist(dd$amount, main="",xlab = "", col = 7)
+boxplot(dd$amount,outline=F, main="", col = 7)
+names(dd)
+dview = dd[,c(5,21)]
+head(dview)
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, amount~response, outline=F,  main="", col = 7)
 mtext("Amount - Crédito Concedido", side = 3, line = -2, outer = TRUE)
 
 # Variável install_rate  - Installment rate: p% máx.de comprom.de renda
 dfSummary(dd$install_rate)
 summary(dd$install_rate)
-par(mfrow=c(1,2))
+par(mfrow=c(1,3))
+hist(dd$install_rate, main="", breaks=seq(0,4), xlab = "", col = 7)
 boxplot(dd$install_rate, main="", col = 7)
-hist(dd$install_rate, main="",xlab = "", col = 7)
+names(dd)
+dview = dd[,c(8,21)]
+head(dview)
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, install_rate~response,  main="", col = 7)
 mtext("Installment rate: p% máx.de comprom.de renda", side = 3, line = -2, outer = TRUE)
 
 # Variável present_residence  - Tempo de residência no endereço atual
 dfSummary(dd$present_residence)
 summary(dd$present_residence)
-par(mfrow=c(1,2))
+par(mfrow=c(1,3))
+hist(dd$present_residence, main="",xlab = "", breaks = seq(0,4), col = 7)
 boxplot(dd$present_residence, main="", col = 7)
-hist(dd$present_residence, main="",xlab = "", breaks = seq(0,5), col = 7)
+names(dd)
+dview = dd[,c(11,21)]
+head(dview)
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, present_residence~response,  main="", col = 7)
 mtext("Tempo de residência no endereço atual", side = 3, line = -2, outer = TRUE)
 
 # Variável age - Idade 
 dfSummary(dd$age)
 summary(dd$age)
-par(mfrow=c(1,2))
-boxplot(dd$age, main="", col = 7)
+par(mfrow=c(1,3))
 hist(dd$age, main="",xlab = "", col = 7)
+boxplot(dd$age, main="", col = 7)
+names(dd)
+dview = dd[,c(13,21)]
+head(dview)
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, age~response,  main="", col = 7)
 mtext("Idade", side = 3, line = -2, outer = TRUE)
 
 # Variável num_credits - Número de créditos neste banco 
 dfSummary(dd$num_credits)
 summary(dd$num_credits)
-par(mfrow=c(1,2))
-boxplot(dd$num_credits, main="", col = 7)
+par(mfrow=c(1,3))
 hist(dd$num_credits, main="",xlab = "", breaks=seq(0,5), col = 7)
+boxplot(dd$num_credits, main="", col = 7)
+names(dd)
+dview = dd[,c(16,21)]
+head(dview)
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, num_credits~response,  main="", col = 7)
 mtext("Número de créditos neste banco", side = 3, line = -2, outer = TRUE)
 
 # Variável num_dependents - Número de dependentes
 dfSummary(dd$num_dependents)
 summary(dd$num_dependents)
-par(mfrow=c(1,2))
+par(mfrow=c(1,3))
+hist(dd$num_dependents, main="",xlab = "", breaks=seq(-0.5,3.5), col = 7)
 boxplot(dd$num_dependents, main="", col = 7)
-hist(dd$num_dependents, main="",xlab = "", breaks=seq(-1,3), col = 7)
+names(dd)
+dview = dd[,c(18,21)]
+head(dview)
+factor(dview)
+dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
+boxplot(data=dview, num_dependents~response,  main="", col = 7)
 mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 
 
@@ -203,6 +242,9 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 # A13 => x > 200 DM / salary 1 year
 # A14 => no checking account
 dfSummary(dd$chk_acc)
+# Simple Scatterplot
+boxplot(x = dd$chk_acc, y= dd$response, main="Scatterplot Example",
+     xlab="Car Weight ", ylab="Miles Per Gallon ", pch=19)
 
 #--------------------------------------------------------------------------------#
 # Variavel history - historico de credito
@@ -245,8 +287,6 @@ dfSummary(dd$savings)
 # A74	4 <= x < 7 years
 # A75	x >= 7 years
 dfSummary(dd$employment)
-modelo1 = lm(dados = dd, formula = dd$response ~ dd$employment)
-summary(modelo1)
 
 #--------------------------------------------------------------------------------#
 # Variável pers_status - Estado Civil e Sexo
@@ -312,6 +352,16 @@ dfSummary(dd$foreign)
 # 2	Credit Rating BAD
 dfSummary(dd$response)
 
+#--------------------------------------------------------------------------------#
+#                               REGRESSÃO 
+#--------------------------------------------------------------------------------#
+#                                LINEAR
+#--------------------------------------------------------------------------------#
+
+library(dplyr)
+
+modelo1 = lm(dados = dd, formula = dd$response ~ dd$employment)
+summary(modelo1)
 
 
 

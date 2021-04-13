@@ -6,9 +6,9 @@
 # Aplicações de Machine Learning
 # Estudo de Caso: Concessão de Crédito, dataset: german credit data
 #
-#   Antonio Henrique Trotta
-#   Joao Ignacio de Almeida Junior
-#   Rafael Nonato
+#   Antonio Henrique Trotta - henrique_trotta@yahoo.com.br
+#   Joao Ignacio de Almeida Junior - jigjunior@gmail.com
+#   Rafael Nonato - rf.nonato@gmail.com
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 #

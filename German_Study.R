@@ -16,7 +16,8 @@
 #                           RISCO DE CRÉDITO
 #--------------------------------------------------------------------------------#
 # O que é um default de crédito?
-#  Um default de crédito ocorre quando um tomador de empréstimo não honra a sua obrigação de pagamento gerando uma perda para o emprestante (normalmente um banco).
+#  Um default de crédito ocorre quando um tomador de empréstimo não honra a sua 
+#  obrigação de pagamento gerando uma perda para o emprestante (normalmente um banco).
 #
 # O que é a Perda Esperada (EL - Expected Loss)
 #  É o produto de três outros fatores:
@@ -57,7 +58,7 @@
 # Tomando por base estas 20 variáveis (ou um subconjunto delas), 
 #   deseja-se desenvolver uma regra de credit score 
 #   que possa ser utilizada para determinar 
-#   se um novo pedido de créditodeverá ser classificado como 
+#   se um novo pedido de crédito deverá ser classificado como 
 #      "good credit risk" 
 #            ou 
 #      "bad credit risk".
@@ -69,8 +70,7 @@
 #   e desenvolva modelos de classificação a partir das seguintes técnicas:
 #
 #  - Escolha intuitiva das variáveis de entrada
-#  - Correlação individual das variáveis de entrada com a variável de resultado 
-#      (***Excel***, R ou a sciki-learn)
+#  - Correlação individual das variáveis de entrada com a variável de resultado (***Excel***, R ou a sciki-learn)
 #  - Análise discriminatória linear (***Excel***, ***R*** ou a scikit-learn)
 #  - Regressão logística (Excel, ***R*** ou a scikit-learn)
 #  - Opcional: Redes neurais (utilize a ***keras***)
@@ -117,6 +117,7 @@
 #--------------------------------------------------------------------------------#
 
 library(summarytools)
+library(dplyr)
 
 # file = "german_data.csv"
 # dic = "german_dicionario.csv"
@@ -161,7 +162,7 @@ dfSummary(dd$present_residence)
 summary(dd$present_residence)
 par(mfrow=c(1,2))
 boxplot(dd$present_residence, main="", col = 7)
-hist(dd$present_residence, main="",xlab = "", col = 7)
+hist(dd$present_residence, main="",xlab = "", breaks = seq(0,5), col = 7)
 mtext("Tempo de residência no endereço atual", side = 3, line = -2, outer = TRUE)
 
 # Variável age - Idade 
@@ -177,7 +178,7 @@ dfSummary(dd$num_credits)
 summary(dd$num_credits)
 par(mfrow=c(1,2))
 boxplot(dd$num_credits, main="", col = 7)
-hist(dd$num_credits, main="",xlab = "", col = 7)
+hist(dd$num_credits, main="",xlab = "", breaks=seq(0,5), col = 7)
 mtext("Número de créditos neste banco", side = 3, line = -2, outer = TRUE)
 
 # Variável num_dependents - Número de dependentes
@@ -185,7 +186,7 @@ dfSummary(dd$num_dependents)
 summary(dd$num_dependents)
 par(mfrow=c(1,2))
 boxplot(dd$num_dependents, main="", col = 7)
-hist(dd$num_dependents, main="",xlab = "", col = 7)
+hist(dd$num_dependents, main="",xlab = "", breaks=seq(-1,3), col = 7)
 mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 
 
@@ -195,6 +196,7 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 #                          Variáveis CATEGÓRICAS
 #--------------------------------------------------------------------------------#
 
+#--------------------------------------------------------------------------------#
 # Variavel chk_acc - Conta Corrente
 # A11 => x < 0 DM
 # A12 => 0 < x < 200 DM
@@ -202,6 +204,7 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 # A14 => no checking account
 dfSummary(dd$chk_acc)
 
+#--------------------------------------------------------------------------------#
 # Variavel history - historico de credito
 # A30 =	nenhum crédito ou todos pagos em dia
 # A31	= todos os créditos deste banco pagos em dia
@@ -210,7 +213,8 @@ dfSummary(dd$chk_acc)
 # A34	= conta considerada crítica ou existência de créditos em outros bancos
 dfSummary(dd$history)
 
-# Variavel purpouse - Finalidade do crédito
+#--------------------------------------------------------------------------------#
+# Variavel purpouse - Objetivo quando da tomada do crédito
 # A40	car (new)
 # A41	car (used)
 # A42	furniture/equipment
@@ -221,9 +225,10 @@ dfSummary(dd$history)
 # A47	vacation
 # A48	retraining
 # A49	business
-# A41	others
+# A410 others
 dfSummary(dd$purpose)
 
+#--------------------------------------------------------------------------------#
 # Variável savings - Saldo Poupança e Renda Fixa
 # A61	=> x < 100 DM
 # A62	=> 100 <= x <  500 DM
@@ -232,6 +237,7 @@ dfSummary(dd$purpose)
 # A65	=> saldo desconhecido ou não existente
 dfSummary(dd$savings)
 
+#--------------------------------------------------------------------------------#
 # Variável employment - Tempo empregado
 # A71	desempregado
 # A72	x < 1 year
@@ -239,7 +245,10 @@ dfSummary(dd$savings)
 # A74	4 <= x < 7 years
 # A75	x >= 7 years
 dfSummary(dd$employment)
+modelo1 = lm(dados = dd, formula = dd$response ~ dd$employment)
+summary(modelo1)
 
+#--------------------------------------------------------------------------------#
 # Variável pers_status - Estado Civil e Sexo
 # A91	masculino: divorciado/separado
 # A92	feminimo: divorciada/separada/casada
@@ -248,12 +257,14 @@ dfSummary(dd$employment)
 # A95	feminimo: solteira
 dfSummary(dd$pers_status)
 
+#--------------------------------------------------------------------------------#
 # Variável guarantor - Fiadores
 # A101	nenhum
 # A102	co-aplicante
 # A103	fiador
 dfSummary(dd$guarantor)
 
+#--------------------------------------------------------------------------------#
 # Variável real_state - Propriedades
 # A121	imóveis
 # A122	empresa, seguro de vida
@@ -261,18 +272,21 @@ dfSummary(dd$guarantor)
 # A124	desconhecido ou nenhuma propriedade
 dfSummary(dd$real_state)
 
+#--------------------------------------------------------------------------------#
 # Variável other_installment - Outros empréstimos
 # A141	outros bancos
 # A142	lojas
 # A143	nenhum
 dfSummary(dd$other_installment)
 
+#--------------------------------------------------------------------------------#
 # Variável housing - Tipo de Residência
 # A151	alugada
 # A152	própria
 # A153	sem custo
-dfSummary(dd$alugada)
+dfSummary(dd$housing)
 
+#--------------------------------------------------------------------------------#
 # Variável job - Emprego
 # A171	Desempregado/Não especializado/Não residente
 # A172	Não especializado/Residente
@@ -280,16 +294,19 @@ dfSummary(dd$alugada)
 # A174	Gerência/Empresário/Altamente Qualificado/Oficial
 dfSummary(dd$job)
 
+#--------------------------------------------------------------------------------#
 # Variável telephone - Possui linha telefônica
 # A191	Não
 # A192	Sim e registrada no seu nome
 dfSummary(dd$telephone)
 
+#--------------------------------------------------------------------------------#
 # Variável foreign - Trabalhador estrangeiro
 # A201	Sim
 # A202	Não
 dfSummary(dd$foreign)
 
+#--------------------------------------------------------------------------------#
 # Variável response - Variável de saida
 # 1	Credit Rating GOOD
 # 2	Credit Rating BAD

@@ -241,10 +241,12 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 # A12 => 0 < x < 200 DM
 # A13 => x > 200 DM / salary 1 year
 # A14 => no checking account
-dfSummary(dd$chk_acc)
-# Simple Scatterplot
-boxplot(x = dd$chk_acc, y= dd$response, main="Scatterplot Example",
-     xlab="Car Weight ", ylab="Miles Per Gallon ", pch=19)
+View(dfSummary(dd$chk_acc))
+f = factor(dd$chk_acc)
+levels(f)
+levels(f) = c(" x < 0", "0 < x < 200", "x > 200", "no check")
+plot(f, ylim = c(0,400), main = "Saldo Conta Corrente", col = 4)
+
 
 #--------------------------------------------------------------------------------#
 # Variavel history - historico de credito
@@ -254,6 +256,10 @@ boxplot(x = dd$chk_acc, y= dd$response, main="Scatterplot Example",
 # A33	= atrasos no pagamento no passado
 # A34	= conta considerada crítica ou existência de créditos em outros bancos
 dfSummary(dd$history)
+f = factor(dd$history)
+levels(f)
+levels(f) = c("nenhum", "pago", "em dia", "em atraso", "critico")
+plot(f, ylim = c(0,600), main = "Histórico de pagador", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variavel purpouse - Objetivo quando da tomada do crédito
@@ -269,6 +275,12 @@ dfSummary(dd$history)
 # A49	business
 # A410 others
 dfSummary(dd$purpose)
+f = factor(dd$purpose)
+levels(f)
+levels(f) = c("car (new)", "car (used)", "furniture/equipment", 
+              "radio/tv", "domestic apply", "repairs", "education",
+              "vacation", "retraining", "business", "others")
+plot(f, ylim = c(0,300), main = "Objetivo do crédito", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável savings - Saldo Poupança e Renda Fixa
@@ -278,6 +290,11 @@ dfSummary(dd$purpose)
 # A64	=> x >= 1000 DM
 # A65	=> saldo desconhecido ou não existente
 dfSummary(dd$savings)
+f = factor(dd$savings)
+levels(f)
+levels(f) = c("x < 100 DM", "100 <= x < 500 DM", "500 <= x < 1000 DM", 
+              "x >= 1000 DM", "desconhecido ou zero")
+plot(f, ylim = c(0,600), main = "Saldo Poupança ou Renda Fixa", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável employment - Tempo empregado
@@ -287,6 +304,11 @@ dfSummary(dd$savings)
 # A74	4 <= x < 7 years
 # A75	x >= 7 years
 dfSummary(dd$employment)
+f = factor(dd$employment)
+levels(f)
+levels(f) = c("desempregado", "x < 1 year", "1 <= x < 4 years", 
+              "4 <= x < 7 years", "x >= 7 years")
+plot(f, ylim = c(0,350), main = "Tempo empregado", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável pers_status - Estado Civil e Sexo
@@ -296,6 +318,11 @@ dfSummary(dd$employment)
 # A94	masculino: casado/viúvo
 # A95	feminimo: solteira
 dfSummary(dd$pers_status)
+f = factor(dd$pers_status)
+levels(f)
+levels(f) = c("Masc. separado", "Fem. separada/casada", "Masc. solteiro", 
+              "Masc. casado/viúvos", "Fem. solteira")
+plot(f, ylim = c(0,600), main = "Estado Civil e Sexo", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável guarantor - Fiadores
@@ -303,6 +330,10 @@ dfSummary(dd$pers_status)
 # A102	co-aplicante
 # A103	fiador
 dfSummary(dd$guarantor)
+f = factor(dd$guarantor)
+levels(f)
+levels(f) = c("nenhum", "co-aplicante", "fiador")
+plot(f, ylim = c(0,1000), main = "Fiador", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável real_state - Propriedades
@@ -311,6 +342,10 @@ dfSummary(dd$guarantor)
 # A123	carros ou outras propriedades não listadas acima
 # A124	desconhecido ou nenhuma propriedade
 dfSummary(dd$real_state)
+f = factor(dd$real_state)
+levels(f)
+levels(f) = c("imóveis", "empresa", "carros+", "desconhecido")
+plot(f, ylim = c(0,350), main = "Propriedades", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável other_installment - Outros empréstimos
@@ -318,6 +353,11 @@ dfSummary(dd$real_state)
 # A142	lojas
 # A143	nenhum
 dfSummary(dd$other_installment)
+f = factor(dd$other_installment)
+levels(f)
+levels(f) = c("outros bancos", "lojas", "nenhum")
+plot(f, ylim = c(0,800), main = "Outros empréstimos", col = 4)
+
 
 #--------------------------------------------------------------------------------#
 # Variável housing - Tipo de Residência
@@ -325,6 +365,11 @@ dfSummary(dd$other_installment)
 # A152	própria
 # A153	sem custo
 dfSummary(dd$housing)
+f = factor(dd$housing)
+levels(f)
+levels(f) = c("alugada", "própria", "sem custo")
+plot(f, ylim = c(0,700), main = "Tipo de Residência", col = 4)
+
 
 #--------------------------------------------------------------------------------#
 # Variável job - Emprego
@@ -333,24 +378,40 @@ dfSummary(dd$housing)
 # A173	Especializado/Oficial
 # A174	Gerência/Empresário/Altamente Qualificado/Oficial
 dfSummary(dd$job)
+f = factor(dd$job)
+levels(f)
+levels(f) = c("Desempregado\nNão especializado\nNão residente", 
+              "Não especializado\nResidente", "Especializado\nOficial",
+              "Gerência\nEmpresário\nAltamente Qualificado\nOficial")
+plot(f, ylim = c(-50,700), main = "Emprego", col = 4)
+
 
 #--------------------------------------------------------------------------------#
 # Variável telephone - Possui linha telefônica
 # A191	Não
 # A192	Sim e registrada no seu nome
 dfSummary(dd$telephone)
+f = factor(dd$telephone)
+levels(f)
+levels(f) = c("Não", "Sim e registrada no seu nome")
+plot(f, ylim = c(0,600), main = "Possui linha telefônica", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável foreign - Trabalhador estrangeiro
 # A201	Sim
 # A202	Não
 dfSummary(dd$foreign)
+f = factor(dd$foreign)
+levels(f)
+levels(f) = c("Sim", "Não")
+plot(f, ylim = c(0,1000), main = "Trabalhador estrangeiro", col = 4)
 
 #--------------------------------------------------------------------------------#
 # Variável response - Variável de saida
 # 1	Credit Rating GOOD
 # 2	Credit Rating BAD
 dfSummary(dd$response)
+
 
 #--------------------------------------------------------------------------------#
 #                               REGRESSÃO 

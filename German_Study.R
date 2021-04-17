@@ -45,10 +45,11 @@
 # De acordo com a mesma, o custo de oportunidade 
 #   (proveniente do lucro de um crédito bom e do prejuízo decorrente de um crédito ruim) será :
 #--------------------------------------------------------------------------------#
-#  $100 para um cliente que paga o empréstimo
-#  -$500 para um cliente que não paga o empréstimo
-#   O cliente que pagaria, mas não recebeu crédito...
-#   ... representa uma perda potencial de (-$100)
+#  True Positive TP =  $100 ... para um cliente que paga o empréstimo
+# False Negative FN = -$100 ... representa uma perda potencial (era mal pagador mas poderia pagar)
+# False Positive FP = -$500 ... para um cliente que não paga o empréstimo (era bom pagador, mas não pagou)
+#  True Negative TN =  $  0 ... O cliente que pagaria, mas não recebeu crédito...
+#  
 #--------------------------------------------------------------------------------#
 #
 # A base de dados sobre concessão de crédito na Alemanha contém observações de 
@@ -118,18 +119,22 @@
 #                         FIM DO ENUNCIADO
 #--------------------------------------------------------------------------------#
 
-library(summarytools)
 
+#--------------------------------------------------------------------------------#
+# 1) LENDO A BASE DE DADOS
 
+arquivo = "german_data.csv"
+dicionario = "german_dicionario.csv"
 
-# file = "german_data.csv"
-# dic = "german_dicionario.csv"
 file = file.choose()
-dd = read.csv2(file)
-names(dd)
-head(dd)
-class(dd)
+# Lendo os arquivos no formato .csv (SEMICOLON separated values)
+dd = read.csv2(file, sep = ";", dec = '.', stringsAsFactors = T)
+str(dd)
 
+# Correcao do tipo da variavel resposta
+dd = dd %>% mutate(response = as.factor(response))
+levels(dd$response) = c("Good", "Bad")
+str(dd)
 
 #--------------------------------------------------------------------------------#
 #                          ANÁLISE DAS VARIÁVEIS
@@ -140,92 +145,58 @@ class(dd)
 # Variavel duration - meses com credito ativo
 dfSummary(dd$duration)
 summary(dd$duration)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$duration, main="",xlab = "", col = 7)
-boxplot(dd$duration,  main="", col = 7)
-dview = dd[,c(2,21)]
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, duration~response,  main="", col = 7)
+boxplot(data=dd, duration~response,  main="", col = 7)
 mtext("Duration - Meses com crédito ativo", side = 3, line = -2, outer = TRUE)
 
 
 # Variável amount - Crédito concedido
 dfSummary(dd$amount)
 summary(dd$amount)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$amount, main="",xlab = "", col = 7)
-boxplot(dd$amount,outline=F, main="", col = 7)
-names(dd)
-dview = dd[,c(5,21)]
-head(dview)
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, amount~response, outline=F,  main="", col = 7)
+boxplot(data=dd, amount~response, outline=F,  main="", col = 7)
 mtext("Amount - Crédito Concedido", side = 3, line = -2, outer = TRUE)
 
 # Variável install_rate  - Installment rate: p% máx.de comprom.de renda
 dfSummary(dd$install_rate)
 summary(dd$install_rate)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$install_rate, main="", breaks=seq(0,4), xlab = "", col = 7)
-boxplot(dd$install_rate, main="", col = 7)
-names(dd)
-dview = dd[,c(8,21)]
-head(dview)
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, install_rate~response,  main="", col = 7)
+boxplot(data=dd, install_rate~response,  main="", col = 7)
 mtext("Installment rate: p% máx.de comprom.de renda", side = 3, line = -2, outer = TRUE)
 
 # Variável present_residence  - Tempo de residência no endereço atual
 dfSummary(dd$present_residence)
 summary(dd$present_residence)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$present_residence, main="",xlab = "", breaks = seq(0,4), col = 7)
-boxplot(dd$present_residence, main="", col = 7)
-names(dd)
-dview = dd[,c(11,21)]
-head(dview)
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, present_residence~response,  main="", col = 7)
+boxplot(data=dd, present_residence~response,  main="", col = 7)
 mtext("Tempo de residência no endereço atual", side = 3, line = -2, outer = TRUE)
 
 # Variável age - Idade 
 dfSummary(dd$age)
 summary(dd$age)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$age, main="",xlab = "", col = 7)
-boxplot(dd$age, main="", col = 7)
-names(dd)
-dview = dd[,c(13,21)]
-head(dview)
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, age~response,  main="", col = 7)
+boxplot(data=dd, age~response,  main="", col = 7)
 mtext("Idade", side = 3, line = -2, outer = TRUE)
 
 # Variável num_credits - Número de créditos neste banco 
 dfSummary(dd$num_credits)
 summary(dd$num_credits)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$num_credits, main="",xlab = "", breaks=seq(0,5), col = 7)
-boxplot(dd$num_credits, main="", col = 7)
-names(dd)
-dview = dd[,c(16,21)]
-head(dview)
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, num_credits~response,  main="", col = 7)
+boxplot(data=dd, num_credits~response,  main="", col = 7)
 mtext("Número de créditos neste banco", side = 3, line = -2, outer = TRUE)
 
 # Variável num_dependents - Número de dependentes
 dfSummary(dd$num_dependents)
 summary(dd$num_dependents)
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 hist(dd$num_dependents, main="",xlab = "", breaks=seq(-0.5,3.5), col = 7)
-boxplot(dd$num_dependents, main="", col = 7)
-names(dd)
-dview = dd[,c(18,21)]
-head(dview)
-factor(dview)
-dview = dview %>% mutate(response = ifelse(response == 1, 'Good', 'Bad'))
-boxplot(data=dview, num_dependents~response,  main="", col = 7)
+boxplot(data=dd, num_dependents~response,  main="", col = 7)
 mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 
 
@@ -234,6 +205,8 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 #--------------------------------------------------------------------------------#
 #                          Variáveis CATEGÓRICAS
 #--------------------------------------------------------------------------------#
+
+par(mfrow=c(1,1))
 
 #--------------------------------------------------------------------------------#
 # Variavel chk_acc - Conta Corrente
@@ -247,7 +220,6 @@ levels(f)
 levels(f) = c(" x < 0", "0 < x < 200", "x > 200", "no check")
 plot(f, ylim = c(0,400), main = "Saldo Conta Corrente", col = 4)
 
-
 #--------------------------------------------------------------------------------#
 # Variavel history - historico de credito
 # A30 =	nenhum crédito ou todos pagos em dia
@@ -260,6 +232,7 @@ f = factor(dd$history)
 levels(f)
 levels(f) = c("nenhum", "pago", "em dia", "em atraso", "critico")
 plot(f, ylim = c(0,600), main = "Histórico de pagador", col = 4)
+boxplot(data=dd, history~response,  main="", col = 7)
 
 #--------------------------------------------------------------------------------#
 # Variavel purpouse - Objetivo quando da tomada do crédito
@@ -410,19 +383,287 @@ plot(f, ylim = c(0,1000), main = "Trabalhador estrangeiro", col = 4)
 # Variável response - Variável de saida
 # 1	Credit Rating GOOD
 # 2	Credit Rating BAD
+plot(dd$response, ylim = c(0,1000), main = "Variável de Saída\nCREDIT RATING", col = 4)
 dfSummary(dd$response)
 
 
 #--------------------------------------------------------------------------------#
-#                               REGRESSÃO 
-#--------------------------------------------------------------------------------#
-#                                LINEAR
+#                 PRE-PROCESSAMENTO DA BASE DE DADOS
 #--------------------------------------------------------------------------------#
 
-library(dplyr)
+#--------------------------------------------------------------------------------#
+# 1) Identificar variáveis
 
-modelo1 = lm(dados = dd, formula = dd$response ~ dd$employment)
-summary(modelo1)
+# Variaveis explicativas
+X = dd %>% select(-response);
+str(X)
+
+# Variavel resposta
+Y <- dd %>% select(response);
+str(Y)
+
+#--------------------------------------------------------------------------------#
+# 2) Criacao de dummy variables para variaveis categoricas
+
+library(caret)
+
+# Criando o objeto que constroi as dummies das variaveis categoricas
+# Formato_Saida: NOMECOLUNA_categoria
+DUMMY_MODEL <- dummyVars(' ~ .', 
+                         data = X, 
+                         sep = '_', 
+                         fullRank = T)
+# Quantidade: apenas n - 1 dummies, onde n e o numero de categorias
+# Obs: o algortimo deleta a primeira na ordem alfabetica)
+DUMMY_MODEL
+
+# Aplicando o objeto na base com as variaveis explicativas 
+# (aqui precisa converter novamente em data.frame)
+X <- as.data.frame(predict(DUMMY_MODEL, newdata = X))
+str(X)
+
+#--------------------------------------------------------------------------------#
+# 3) [EXTRA] Padronizacao das variaveis
+
+# Necessario para diversos algortimos (PCA, clusterizacao, SVM, Redes neurais)
+# Criando o objeto com os valores de padronizacao das variaveis
+PREPROC_VALUES <- preProcess(X, method = c('center', 'scale'))
+
+# Aplicando o objeto na base com as variaveis explicativas
+X_STANDARD <- predict(PREPROC_VALUES, X)
+str(X_STANDARD)
+
+#--------------------------------------------------------------------------------#
+# 4) TRANSFORMANDO A VARIAVEL RESPOSTA
+
+# Se a variável de resposta ainda não for Factor, precisamos tranformá-la
+# Para classificacao muitos pacotes conseguem lidar com factor como variavel resposta
+
+# Aqui precisamos saber: que evento queremos modelar?
+#       Yes: aconteceu o evento de churn, o cliente cancelou o contrato
+#     OU No: nao aconteceu o evento de churn, o cliente permaneceu como cliente
+
+# Queremos medir a probabilidade do cliente cancelar o contrato e deixar de ser
+# cliente da empresa ou a probabilidade do cliente estar fidelizado com ela?
+# Aqui seguiremos olhando para o evento, e com isso nao e necessario alterar os 
+# niveis do fator, mas caso precisasse inverter no momento antes da modelagem
+# poderiamos usar:
+
+head(Y)
+str(Y)
+
+levels(Y) = c("GOOD", "BAD");
+str(Y)
+
+#--------------------------------------------------------------------------------#
+# 5) BASE FINAL 
+
+# Conectando as variaveis explicativas e a variavel resposta processadas
+# DATA_CLAS_PREPROC <- cbind(X_CLAS,Y_CLAS)
+dd_PREPROCESS <- bind_cols(X_STANDARD,Y)
+dd_PREPROCESS
 
 
 
+#--------------------------------------------------------------------------------#
+#                           REGRESSÃO LINEAR
+#--------------------------------------------------------------------------------#
+#                              LOGISTICA
+#--------------------------------------------------------------------------------#
+
+
+set.seed(123) # garantindo reprodutibilidade da amostra
+
+#--------------------------------------------------------------------------------#
+# 1) Divisao de Dataset - Treino e Teste
+
+index_treino <- createDataPartition(y = dd_PREPROCESS$response, p = 0.7, list = F)
+trainning_set <- dd_PREPROCESS[index_treino, ] # base de treino: 70%
+testing_set  <- dd_PREPROCESS[-index_treino, ] # base de teste: 30%
+
+# Avaliando a distribuicao da variavel resposta
+summary(trainning_set$response)
+summary(testing_set$response)
+
+table(trainning_set$response)
+table(testing_set$response)
+
+prop.table(table(trainning_set$response))
+prop.table(table(testing_set$response))
+
+
+#--------------------------------------------------------------------------------#
+# 2) Treino do algoritmo de regressao logistica
+
+?glm
+modelo <- glm(data = trainning_set, 
+               formula = response ~ .,
+               family = binomial(link="logit"))
+modelo
+
+# Determinando os coeficientes das variaveis explicativas
+summary(modelo)
+
+#--------------------------------------------------------------------------------#
+# 3) Avaliar correlação de multicolinearidade
+
+library(car)
+vif(modelo)
+round(vif(modelo),2)
+
+# https://www.statisticshowto.com/variance-inflation-factor/
+# O calculo do vif nao encontrou correlacao, geralmente valores > 5 de VIF indicam correlacao
+
+# Interpreting the Variance Inflation Factor
+# ------------------------------------------
+# 1 = not correlated.
+# Between 1 and 5 = moderately correlated.
+# Greater than 5 = highly correlated.
+# ------------------------------------------
+
+# 6 - history_A32 = 7.31
+# 8 - history_A34 = 5.30
+# 24- employment_A73 = 6.24
+# 26- employment_A75 = 5.27
+# 29- pers_status_A93 = 5.13
+# 43- job_A172 = 10.08
+# 44- job_A173 = 13.96
+# 45- job_A174 =  7.85
+
+# Removendo as altas correlações
+names(trainning_set)
+trainning_set = trainning_set[,-c(6,8,24,26,29,43,44,45) ]
+names(trainning_set)
+
+# treinando novamente sem correlacoes
+modelo <- glm(data = trainning_set, formula = response ~ .,family = binomial(link="logit"))
+modelo
+summary(modelo)
+round(vif(modelo),2)
+
+
+#--------------------------------------------------------------------------------#
+# 4) Refinando o ajuste atraves do processo stepwise
+
+library(MASS)
+?stepAIC
+modelo_fit_STEP = stepAIC(modelo, direction = 'both', trace = TRUE)
+modelo_fit_STEP
+
+# Determinando os coeficientes das variaveis explicativas
+summary(modelo_fit_STEP)
+
+#--------------------------------------------------------------------------------#
+# 5) Realizando as predicoes
+
+# Probabilidade pela regressao full
+Y_PROB_TRAIN <- predict(modelo, type = 'response') 
+Y_PROB_TEST  <- predict(modelo, newdata = testing_set, type = 'response')
+head(Y_PROB_TRAIN)
+
+# Probabilidade pela regressao stepwise
+Y_PROB_TRAIN_STEP <- predict(modelo_fit_STEP, type = 'response')  
+Y_PROB_TEST_STEP  <- predict(modelo_fit_STEP, newdata = testing_set, type = 'response')
+head(Y_PROB_TRAIN_STEP)
+
+
+# [EXTRA] Verificando a aderencia do ajuste logistico (teste Spiegelhalter)
+library(rms)
+?val.prob
+val.prob(Y_PROB_TRAIN, 
+         ifelse(trainning_set$response == 'Good', 1, 0), 
+         smooth = F)[c('S:z','S:p')]
+# p valor > 5%, nao podemos rejeitar a hipotese nula
+
+#--------------------------------------------------------------------------------#
+# 6) Avaliando a performance dos modelos e existencia de overfitting
+
+# Regressao full
+library(hmeasure) 
+HMeasure(trainning_set$response,Y_PROB_TRAIN)$metrics
+HMeasure(testing_set$response, Y_PROB_TEST)$metrics
+
+# Regressao com stepwise
+HMeasure(trainning_set$response,Y_PROB_TRAIN_STEP)$metrics
+HMeasure(testing_set$response, Y_PROB_TEST_STEP)$metrics
+
+# Os resultados sao muito parecidos, porem a regressao com stepwise resultou em
+# um modelo "mais enxuto", com mesma performance
+
+# Modelo final
+# Os resultados sao muito parecidos, porem a regressao com stepwise resultou em
+# um modelo "mais enxuto", i.e. com menos vari?veis e com mesma performance
+MDL_FINAL <- modelo_fit.STEP
+
+#--------------------------------------------------------------------------------#
+# 7) Importancia das variaveis (Modelo final)
+
+#https://cran.r-project.org/web/packages/dominanceanalysis/vignettes/da-logistic-regression.html
+anova(MDL_FINAL, test= "Chisq")
+
+#--------------------------------------------------------------------------------#
+# 8) Inspecao dos valores previstos vs observados (modelo final)
+
+# Geracao da matriz de confusao para diferentes pontos de corte (amostra teste)
+
+# Label observado
+Y_OBS <- TEST_SET$CHURN
+
+# Label previsto usando: 
+#       se PROB > 50% -> 1 (Yes)
+#       se PROB > 30% -> 1 (Yes)
+Y_CLAS1 <- factor(ifelse(Y_PROB_TEST.STEP > 0.5,1,0),
+                  levels = c(0,1),
+                  labels = c('No','Yes')) 
+Y_CLAS2 <- factor(ifelse(Y_PROB_TEST.STEP > 0.3,1,0),
+                  levels = c(0,1),
+                  labels = c('No','Yes'))
+
+confusionMatrix(data = Y_CLAS1, reference = Y_OBS, positive = 'Yes')
+confusionMatrix(data = Y_CLAS2, reference = Y_OBS, positive = 'Yes')
+
+# Distribuicao do score
+graphics.off()
+par(mfrow = c(1,2))
+
+
+# df auxiliar
+AUX <- data.frame(Y_PROB = Y_PROB_TEST.STEP,
+                  Y_OBS  = TEST_SET$CHURN)
+
+boxplot(Y_PROB ~ Y_OBS, data = AUX,
+        main = 'Boxplot probs', cex.main = 1.2, cex.axis = 1.2, 
+        xlab = 'PROBABILITIES', ylab = 'Target',
+        ylim = c(0,1), horizontal = T,
+        col = c('darkorange','darkorange4'), border = 'gray20')
+hist(AUX$Y_PROB, breaks = 20, xlim = c(0,1),
+     main = 'Histogram probs', cex.main = 1.2, 
+     xlab = 'PROBABILITIES', ylab = 'FREQUENCIA (#)', cex.axis = 1.2,  
+     col = 'darkorange', border = 'brown')
+
+graphics.off()
+
+#--------------------------------------------------------------------------------#
+# 9) Curva ROC
+
+library(pROC)
+ROC1 <- roc(TRAIN_SET$CHURN,Y_PROB_TRAIN.STEP)
+Y1   <- ROC1$sensitivities
+X1   <- 1 - ROC1$specificities
+
+ROC2 <- roc(TEST_SET$CHURN,Y_PROB_TEST.STEP)
+Y2   <- ROC2$sensitivities
+X2   <- 1 - ROC2$specificities
+
+plot(X1,Y1, type ="n", cex.axis = 1.2, cex = 0.5,
+     xlab = '1 - ESPECIFICIDADE', ylab = 'SENSITIVIDADE')
+lines(X1, Y1, lwd = 3, lty = 1, col = 'tomato3') 
+lines(X2, Y2, lwd = 3, lty = 1, col = 'cyan3') 
+abline(0, 1, lty = 2)
+legend('bottomright',c('TRAIN SET','TEST SET'), lty = 1, col = c('tomato3','cyan3'))
+
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+# FIM
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#

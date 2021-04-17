@@ -704,8 +704,8 @@ str(X_STANDARD)
 head(Y)
 str(Y)
 
-levels(Y) = c("GOOD", "BAD");
-str(Y)
+#levels(Y) = c("GOOD", "BAD");
+#str(Y)
 
 #--------------------------------------------------------------------------------#
 # 4) BASE FINAL 
@@ -982,24 +982,11 @@ val.prob(Y_PROB_TRAIN,
 
 
 #-------------------------------------------------------------------------------#
-
-
 #--------------------------------------------------------------------------------#
 #                               MODELO FINAL
+# Todos os modelos tem resultados aproximados, entao o modelo final elegido foi 
 #--------------------------------------------------------------------------------#
-MODEL = modelo_fit_STEP_intuitivo
-MODEL
-summary(MODEL)
-
-
-
-
-
-
-
-
-
-
+MODEL = modelo_full
 
 
 #--------------------------------------------------------------------------------#
@@ -1007,12 +994,14 @@ summary(MODEL)
 
 # Regressao full
 library(hmeasure) 
-HMeasure(TRAIN_SET$CHURN,Y_PROB_TRAIN)$metrics
-HMeasure(TEST_SET$CHURN, Y_PROB_TEST)$metrics
+HMeasure(trainning_set_full$response,Y_PROB_TRAIN)$metrics
+HMeasure(testing_set_full$response, Y_PROB_TEST)$metrics
+testing_set_full$response
 
 # Regressao com stepwise
-HMeasure(TRAIN_SET$CHURN,Y_PROB_TRAIN.STEP)$metrics
-HMeasure(TEST_SET$CHURN, Y_PROB_TEST.STEP)$metrics
+HMeasure(trainning_set_dummies$response,Y_PROB_TRAIN_STEP)$metrics
+HMeasure(testing_set_dummies$response, Y_PROB_TRAIN_STEP)$metrics
+testing_set_dummies$response
 
 # Os resultados sao muito parecidos, porem a regressao com stepwise resultou em
 # um modelo "mais enxuto", com mesma performance
@@ -1020,13 +1009,14 @@ HMeasure(TEST_SET$CHURN, Y_PROB_TEST.STEP)$metrics
 # Modelo final
 # Os resultados sao muito parecidos, porem a regressao com stepwise resultou em
 # um modelo "mais enxuto", i.e. com menos vari?veis e com mesma performance
-MDL_FINAL <- MDL_FIT.STEP
+MODEL <- modelo_full
 
 #--------------------------------------------------------------------------------#
 # 6) Importancia das variaveis (Modelo final)
 
 #https://cran.r-project.org/web/packages/dominanceanalysis/vignettes/da-logistic-regression.html
-anova(MDL_FINAL, test= "Chisq")
+library(car)
+anova(MODEL, test= "Chisq")
 
 #--------------------------------------------------------------------------------#
 # 7) Inspecao dos valores previstos vs observados (modelo final)
@@ -1034,15 +1024,49 @@ anova(MDL_FINAL, test= "Chisq")
 # Geracao da matriz de confusao para diferentes pontos de corte (amostra teste)
 
 # Label observado
-Y_OBS <- TEST_SET$CHURN
+Y_OBS <- testing_set$response
+head(Y_OBS)
+head(Y_PROB_TEST)
+levels(Y_OBS)
+
+# testando o ponto de corte
+referencia <- factor(ifelse(Y_PROB_TEST > 0.74, 'Bad', 'Good'),
+                  levels = levels(Y_OBS),
+                  labels = c('Good','Bad')) 
+
+confusao = confusionMatrix(data = Y_OBS, reference = referencia, positive = 'Good')
+
+# CORTE em 70%
+# Especif.	73,33% capacidade em encontrar 0s na população
+# Sensib.	  74,81% capacidade em encontrar 1s na população
+# Precisão	taxa de acerto de 1s
+# Acurácia	74,07% acertos total
+
+resultado = 0
+resultado = resultado + 205 * 100 
+resultado = resultado + 5 * (-500) 
+resultado = resultado + 17 * 0 
+resultado = resultado + 73 * (-100) 
+resultado
+
+# True Positive TP =  $100 ... para um cliente que paga o empréstimo
+# False Negative FN = -$100 ... representa uma perda potencial (era mal pagador mas poderia pagar)
+# False Positive FP = -$500 ... para um cliente que não paga o empréstimo (era bom pagador, mas não pagou)
+#  True Negative TN =  $  0 ... O cliente que pagaria, mas não recebeu crédito...
+#  
+
+# Especif.	capacidade em encontrar 0s na população
+# Sensib.	  capacidade em encontrar 1s na população
+# Precisão	taxa de acerto de 1s
+# Acurácia	% acertos total
 
 # Label previsto usando: 
 #       se PROB > 50% -> 1 (Yes)
 #       se PROB > 30% -> 1 (Yes)
-Y_CLAS1 <- factor(ifelse(Y_PROB_TEST.STEP > 0.5,1,0),
+Y_CLAS1 <- factor(ifelse(Y_PROB_TEST > 0.5,1,0),
                   levels = c(0,1),
                   labels = c('No','Yes')) 
-Y_CLAS2 <- factor(ifelse(Y_PROB_TEST.STEP > 0.3,1,0),
+Y_CLAS2 <- factor(ifelse(Y_PROB_TEST > 0.3,1,0),
                   levels = c(0,1),
                   labels = c('No','Yes'))
 
@@ -1055,8 +1079,8 @@ par(mfrow = c(1,2))
 
 
 # df auxiliar
-AUX <- data.frame(Y_PROB = Y_PROB_TEST.STEP,
-                  Y_OBS  = TEST_SET$CHURN)
+AUX <- data.frame(Y_PROB = Y_PROB_TEST,
+                  Y_OBS  = testing_set_dummies$response)
 
 boxplot(Y_PROB ~ Y_OBS, data = AUX,
         main = 'Boxplot probs', cex.main = 1.2, cex.axis = 1.2, 
@@ -1074,11 +1098,11 @@ graphics.off()
 # 8) Curva ROC
 
 library(pROC)
-ROC1 <- roc(TRAIN_SET$CHURN,Y_PROB_TRAIN.STEP)
+ROC1 <- roc(trainning_set_full$response,Y_PROB_TRAIN)
 Y1   <- ROC1$sensitivities
 X1   <- 1 - ROC1$specificities
 
-ROC2 <- roc(TEST_SET$CHURN,Y_PROB_TEST.STEP)
+ROC2 <- roc(testing_set_full$response,Y_PROB_TEST)
 Y2   <- ROC2$sensitivities
 X2   <- 1 - ROC2$specificities
 

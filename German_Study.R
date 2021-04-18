@@ -149,10 +149,21 @@ dd_intuitivo = dd
 #--------------------------------------------------------------------------------#
 #                          ANÁLISE DAS VARIÁVEIS
 #--------------------------------------------------------------------------------#
+
+# Check continuous variables
+continuous <-select_if(dd, is.numeric)
+summary(continuous)
+
+# Select categorical column
+factor <- data.frame(select_if(dd, is.factor))
+ncol(factor)
+
+#--------------------------------------------------------------------------------#
 #                           Variáveis CONTÍNUAS
 #--------------------------------------------------------------------------------#
 
 # Variavel duration - meses com credito ativo
+#--------------------------------------------------------------------------------#
 dfSummary(dd$duration)
 summary(dd$duration)
 par(mfrow=c(1,2))
@@ -160,15 +171,48 @@ hist(dd$duration, main="",xlab = "", col = 7)
 boxplot(data=dd, duration~response,  main="", col = 7)
 mtext("Duration - Meses com crédito ativo", side = 3, line = -2, outer = TRUE)
 
+# ---------------------------------------------------------------------------
+# removendo outliers
+boxplot(dd$duration, plot=TRUE)$out
+boxplot(dd$duration, plot=FALSE)$out
+outliers = boxplot(dd$duration, plot=FALSE)$out
+dd <- dd[-which(dd$duration %in% outliers),]
+boxplot(dd$duration, plot=TRUE)$out
+str(dd)
+
+outliers = boxplot(dd_intuitivo$duration, plot=TRUE)$out
+dd_intuitivo <- dd_intuitivo[-which(dd_intuitivo$duration %in% outliers),]
+boxplot(dd_intuitivo$duration, plot=TRUE)$out
+str(dd_intuitivo)
+# ---------------------------------------------------------------------------
+
+
 # Variável amount - Crédito concedido
+#--------------------------------------------------------------------------------#
 dfSummary(dd$amount)
 summary(dd$amount)
 par(mfrow=c(1,2))
 hist(dd$amount, main="",xlab = "", col = 7)
-boxplot(data=dd, amount~response, outline=F,  main="", col = 7)
+boxplot(data=dd, amount~response, outline=T,  main="", col = 7)
 mtext("Amount - Crédito Concedido", side = 3, line = -2, outer = TRUE)
 
+# ---------------------------------------------------------------------------
+# removendo outliers
+boxplot(dd$amount, plot=TRUE)$out
+boxplot(dd$amount, plot=FALSE)$out
+outliers = boxplot(dd$amount, plot=FALSE)$out
+dd <- dd[-which(dd$amount %in% outliers),]
+boxplot(dd$amount, plot=TRUE)$out
+str(dd)
+
+outliers = boxplot(dd_intuitivo$amount, plot=TRUE)$out
+dd_intuitivo <- dd_intuitivo[-which(dd_intuitivo$amount %in% outliers),]
+boxplot(dd_intuitivo$amount, plot=TRUE)$out
+str(dd_intuitivo)
+# ---------------------------------------------------------------------------
+
 # Variável install_rate  - Installment rate: p% máx.de comprom.de renda
+#--------------------------------------------------------------------------------#
 dfSummary(dd$install_rate)
 summary(dd$install_rate)
 par(mfrow=c(1,2))
@@ -177,6 +221,7 @@ boxplot(data=dd, install_rate~response,  main="", col = 7)
 mtext("Installment rate: p% máx.de comprom.de renda", side = 3, line = -2, outer = TRUE)
 
 # Variável present_residence  - Tempo de residência no endereço atual
+#--------------------------------------------------------------------------------#
 dfSummary(dd$present_residence)
 summary(dd$present_residence)
 par(mfrow=c(1,2))
@@ -187,20 +232,35 @@ mtext("Tempo de residência no endereço atual", side = 3, line = -2, outer = TR
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-present_residence)
-head(dd_intuitivo)
+str(dd_intuitivo)
+# nao relevante para variavel resposta
 #-----------------------------------------------------------------------------
 
 # Variável age - Idade 
+#--------------------------------------------------------------------------------#
 dfSummary(dd$age)
 summary(dd$age)
 par(mfrow=c(1,2))
 hist(dd$age, main="",xlab = "", col = 7)
-boxplot(data=dd, age~response,  main="", col = 7, outline=F)
+boxplot(data=dd, age~response,  main="", col = 7, outline=T)
 mtext("Idade", side = 3, line = -2, outer = TRUE)
+# ---------------------------------------------------------------------------
+# removendo outliers
+boxplot(dd$age, plot=TRUE)$out
+outliers = boxplot(dd$age, plot=FALSE)$out
+dd <- dd[-which(dd$age %in% outliers),]
+boxplot(dd$age, plot=TRUE)$out
+str(dd)
+
+outliers = boxplot(dd_intuitivo$age, plot=TRUE)$out
+dd_intuitivo <- dd_intuitivo[-which(dd_intuitivo$age %in% outliers),]
+boxplot(dd_intuitivo$age, plot=TRUE)$out
+str(dd_intuitivo)
+# ---------------------------------------------------------------------------
 
 # Variável num_credits - Número de créditos neste banco 
+#--------------------------------------------------------------------------------#
 dfSummary(dd$num_credits)
 summary(dd$num_credits)
 par(mfrow=c(1,2))
@@ -211,12 +271,13 @@ mtext("Número de créditos neste banco", side = 3, line = -2, outer = TRUE)
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-num_credits)
-head(dd_intuitivo)
+str(dd_intuitivo)
+# nao relevante para variável resposta
 #-----------------------------------------------------------------------------
 
 # Variável num_dependents - Número de dependentes
+#--------------------------------------------------------------------------------#
 dfSummary(dd$num_dependents)
 summary(dd$num_dependents)
 par(mfrow=c(1,2))
@@ -227,9 +288,9 @@ mtext("Número de dependentes", side = 3, line = -2, outer = TRUE)
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-num_dependents)
-head(dd_intuitivo)
+str(dd_intuitivo)
+# nao relevante para variável resposta
 #-----------------------------------------------------------------------------
 
 
@@ -252,7 +313,7 @@ dfSummary(dd$chk_acc)
 f = factor(dd$chk_acc)
 levels(f)
 levels(f) = c(" x < 0", "0 < x < 200", "x > 200", "no check")
-# plot(f, ylim = c(0,400), main = "Saldo Conta Corrente", col = 4)
+#plot(f, ylim = c(0,400), main = "Saldo Conta Corrente", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Conta Corrente', 
@@ -262,6 +323,10 @@ legend("topleft",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = chk_acc, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 
 
 #--------------------------------------------------------------------------------#
@@ -275,7 +340,7 @@ dfSummary(dd$history)
 f = factor(dd$history)
 levels(f)
 levels(f) = c("nenhum", "pago", "em dia", "em atraso", "critico")
-plot(f, ylim = c(0,600), main = "Histórico de pagador", col = 4)
+#plot(f, ylim = c(0,600), main = "Histórico de pagador", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Historico de crédico', 
@@ -285,6 +350,10 @@ legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = history, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 
 #--------------------------------------------------------------------------------#
 # Variavel purpouse - Objetivo quando da tomada do crédito
@@ -302,10 +371,10 @@ legend("topright",
 dfSummary(dd$purpose)
 f = factor(dd$purpose)
 levels(f)
-levels(f) = c("car (new)", "car (used)", "furniture/equipment", 
-              "radio/tv", "domestic apply", "repairs", "education",
+levels(f) = c("car (new)", "car (used)", "furniture\nequipment", 
+              "radio/tv", "domestic\napply", "repairs", "education",
               "vacation", "retraining", "business", "others")
-plot(f, ylim = c(0,300), main = "Objetivo do crédito", col = 4)
+# plot(f, ylim = c(0,300), main = "Objetivo do crédito", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Objetivo quando da tomada do crédito', 
@@ -315,6 +384,11 @@ legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = purpose, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
+
 
 #--------------------------------------------------------------------------------#
 # Variável savings - Saldo Poupança e Renda Fixa
@@ -328,7 +402,7 @@ f = factor(dd$savings)
 levels(f)
 levels(f) = c("x < 100 DM", "100 <= x < 500 DM", "500 <= x < 1000 DM", 
               "x >= 1000 DM", "desconhecido ou zero")
-plot(f, ylim = c(0,600), main = "Saldo Poupança ou Renda Fixa", col = 4)
+# plot(f, ylim = c(0,600), main = "Saldo Poupança ou Renda Fixa", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Saldo Poupança e Renda Fixa', 
@@ -338,6 +412,10 @@ legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = savings, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 
 #--------------------------------------------------------------------------------#
 # Variável employment - Tempo empregado
@@ -362,6 +440,10 @@ legend("topright",
        fill = c(7,4)
 )
 
+ggplot(dd, aes(x = employment, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
+
 #--------------------------------------------------------------------------------#
 # Variável pers_status - Estado Civil e Sexo
 # A91	masculino: divorciado/separado
@@ -385,6 +467,10 @@ legend("topright",
        fill = c(7,4)
 )
 
+ggplot(dd, aes(x = pers_status, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
+
 #--------------------------------------------------------------------------------#
 # Variável guarantor - Fiadores
 # A101	nenhum
@@ -399,18 +485,21 @@ barplot(table(dd$response, f),
         data = dd_intuitivo,
         main = 'Fiadores', 
         col = c(7,4),
-        border = 'gray20', log="y")
+        border = 'gray20')
 legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = guarantor, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-guarantor)
-head(dd_intuitivo)
-# variável nao relevante ou pode sujar estar a base
+str(dd_intuitivo)
+# variável tem baixa distribuição, podendo aumentar correlacao
 #-----------------------------------------------------------------------------
 
 
@@ -435,6 +524,10 @@ legend("topright",
        fill = c(7,4)
 )
 
+ggplot(dd, aes(x = real_state, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
+
 #--------------------------------------------------------------------------------#
 # Variável other_installment - Outros empréstimos
 # A141	outros bancos
@@ -450,20 +543,21 @@ barplot(table(dd$response, f),
         main = 'Outros empréstimos', 
         col = c(7,4),
         border = 'gray20')
-legend("top",
+legend("topleft",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = other_installment, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-other_installment)
-head(dd_intuitivo)
-# variável nao relevante ou pode sujar estar a base
+str(dd_intuitivo)
+# variável tem baixa distribuição, podendo aumentar correlacao
 #-----------------------------------------------------------------------------
-
-
 
 #--------------------------------------------------------------------------------#
 # Variável housing - Tipo de Residência
@@ -484,15 +578,17 @@ legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+
+ggplot(dd, aes(x = housing, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-housing)
-head(dd_intuitivo)
-# variável nao relevante ou pode sujar estar a base
+str(dd_intuitivo)
+# variável tem baixa distribuição, podendo aumentar correlacao
 #-----------------------------------------------------------------------------
-
 
 
 #--------------------------------------------------------------------------------#
@@ -518,13 +614,16 @@ legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+ggplot(dd, aes(x = job, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
+
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-job)
-head(dd_intuitivo)
-# variável pode gerar correlcao alta com resultado
+str(dd_intuitivo)
+# praticamente a mesma proporção de resposta entre opcoes
 #-----------------------------------------------------------------------------
 
 
@@ -535,26 +634,20 @@ head(dd_intuitivo)
 dfSummary(dd$telephone)
 f = factor(dd$telephone)
 levels(f)
-levels(f) = c("Não", "Sim e registrada no seu nome")
+levels(f) = c("Não", "Sim (registrada)")
 plot(f, ylim = c(0,600), main = "Possui linha telefônica", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Possui linha telefônica', 
         col = c(7,4),
-        border = 'gray20', log="y")
+        border = 'gray20')
 legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
-#-----------------------------------------------------------------------------
-#                           INTUIÇÃO
-#-----------------------------------------------------------------------------
-head(dd)
-dd_intuitivo = dd_intuitivo %>% dplyr::select(-telephone)
-head(dd_intuitivo)
-# percentual de Good/Bad é próximo entre as duas opçòes
-#-----------------------------------------------------------------------------
-
+ggplot(dd, aes(x = telephone, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 
 #--------------------------------------------------------------------------------#
 # Variável foreign - Trabalhador estrangeiro
@@ -574,115 +667,95 @@ legend("topright",
        c("Good","Bad"),
        fill = c(7,4)
 )
+ggplot(dd, aes(x = foreign, fill = response)) +
+        geom_bar(position = "fill") +
+        theme_classic()
 #-----------------------------------------------------------------------------
 #                           INTUIÇÃO
 #-----------------------------------------------------------------------------
-head(dd)
 dd_intuitivo = dd_intuitivo %>% dplyr::select(-foreign)
-head(dd_intuitivo)
-str(dd)
 str(dd_intuitivo)
-# percentual de Good/Bad é próximo entre as duas opçòes
+# baixa distribuicao dos dados, podendo levar a alta correlacao
 #-----------------------------------------------------------------------------
 
 
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#                        VARIAVEL RESPOSTA
+#--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 # Variável response - Variável de saida
 # 1	Credit Rating GOOD
 # 2	Credit Rating BAD
-plot(dd$response, ylim = c(0,1000), main = "Variável de Saída\nCREDIT RATING", col = 4)
+par(mfrow = c(1,1))
+#plot(dd$response, ylim = c(0,1000), main = "Variável de Saída\nCREDIT RATING", col = 4)
+ggplot(dd, aes(x = response, fill = response)) +
+        geom_bar(position = "stack") +
+        theme_classic()
+
 dfSummary(dd$response)
+str(dd)
 
+dfSummary(dd_intuitivo$response)
+str(dd_intuitivo)
 
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 #                 PRE-PROCESSAMENTO DA BASE DE DADOS
 #--------------------------------------------------------------------------------#
-
 #--------------------------------------------------------------------------------#
-# 1) Identificar variáveis
+#--------------------------------------------------------------------------------#
 
-library(dplyr)
-library(tidyverse)
 
 # Variaveis explicativas
 X = dd %>% dplyr::select(-response)
 str(X)
 
+X_intuitivo = dd_intuitivo %>% dplyr::select(-response)
+str(X_intuitivo)
+
 # Variavel resposta
 Y <- dd %>% dplyr::select(response);
 str(Y)
 
-#--------------------------------------------------------------------------------#
-#                           REGRESSÃO LINEAR
-#--------------------------------------------------------------------------------#
-#                              LOGISTICA
-#--------------------------------------------------------------------------------#
-
-
-set.seed(123) # garantindo reprodutibilidade da amostra
-
-#--------------------------------------------------------------------------------#
-#                      MODELO FULL - Dados brutos
-#--------------------------------------------------------------------------------#
-
-#--------------------------------------------------------------------------------#
-# 1) Divisao de Dataset - Treino e Teste
-set.seed(123) # garantindo reprodutibilidade da amostra
-index_treino_full <- createDataPartition(y = dd$response, p = 0.7, list = F)
-trainning_set_full <- dd[index_treino_full, ] # base de treino: 70%
-testing_set_full  <- dd[-index_treino_full, ] # base de teste: 30%
-
-# Avaliando a distribuicao da variavel resposta
-summary(trainning_set_full$response)
-summary(testing_set_full$response)
-
-#--------------------------------------------------------------------------------#
-# 2) Treino do algoritmo de regressao logistica
-?glm
-modelo_full <- glm(data = trainning_set_full, 
-                   formula = response ~ .,
-                   family = binomial(link="logit"))
-modelo_full
-summary(modelo_full)
-
-# Modelo FULL
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
-#--------------------------------------------------------------------------------#
-#                      MODELO FULL DUMMIES
-#--------------------------------------------------------------------------------#
+Y_intuitivo = dd_intuitivo %>% dplyr::select(response)
+str(Y_intuitivo)
 
 #--------------------------------------------------------------------------------#
 # 1) Criacao de dummy variables para variaveis categoricas
 
 library(caret)
-head(X)
+str(X)
 # Criando o objeto que constroi as dummies das variaveis categoricas
 # Formato_Saida: NOMECOLUNA_categoria
-DUMMY_MODEL <- dummyVars(' ~ .', 
-                         data = X, 
-                         sep = '_', 
-                         fullRank = T)
+DUMMIES <- dummyVars(' ~ .', 
+                     data = X, 
+                     sep = '_', 
+                     fullRank = T)
 # Quantidade: apenas n - 1 dummies, onde n e o numero de categorias
 # Obs: o algortimo deleta a primeira na ordem alfabetica)
-DUMMY_MODEL
+str(DUMMIES)
 
 # Aplicando o objeto na base com as variaveis explicativas 
 # (aqui precisa converter novamente em data.frame)
-X <- as.data.frame(predict(DUMMY_MODEL, newdata = X))
-str(X)
+X_DUMMIES <- as.data.frame(predict(DUMMIES, newdata = X))
+str(X_DUMMIES)
 
 #--------------------------------------------------------------------------------#
 # 2) [EXTRA] Padronizacao das variaveis
 
 # Necessario para diversos algortimos (PCA, clusterizacao, SVM, Redes neurais)
 # Criando o objeto com os valores de padronizacao das variaveis
-PREPROC_VALUES <- preProcess(X, method = c('center', 'scale'))
+PREPROC_VALUES <- preProcess(X_DUMMIES, method = c('center', 'scale'))
 
 # Aplicando o objeto na base com as variaveis explicativas
-X_STANDARD <- predict(PREPROC_VALUES, X)
+X_STANDARD <- predict(PREPROC_VALUES, X_DUMMIES)
 str(X_STANDARD)
 
 #--------------------------------------------------------------------------------#
@@ -701,11 +774,8 @@ str(X_STANDARD)
 # niveis do fator, mas caso precisasse inverter no momento antes da modelagem
 # poderiamos usar:
 
-head(Y)
 str(Y)
-
 #levels(Y) = c("GOOD", "BAD");
-#str(Y)
 
 #--------------------------------------------------------------------------------#
 # 4) BASE FINAL 
@@ -717,36 +787,75 @@ dd_PREPROCESS
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#                           REGRESSÃO LOGISTICA
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+
+
+#--------------------------------------------------------------------------------#
+#                                MODELO FULL
+#--------------------------------------------------------------------------------#
+
+#--------------------------------------------------------------------------------#
+# 1) Divisao de Dataset - Treino e Teste
+
 set.seed(123) # garantindo reprodutibilidade da amostra
-index_treino_dummies <- createDataPartition(y = dd_PREPROCESS$response, p = 0.7, list = F)
-trainning_set_dummies <- dd_PREPROCESS[index_treino_dummies, ] # base de treino: 70%
-testing_set_dummies  <- dd_PREPROCESS[-index_treino_dummies, ] # base de teste: 30%
+
+index_treino <- createDataPartition(y = dd_PREPROCESS$response, p = 0.7, list = F)
+trainning_set <- dd_PREPROCESS[index_treino, ] # base de treino: 70%
+testing_set  <- dd_PREPROCESS[-index_treino, ] # base de teste: 30%
 
 # Avaliando a distribuicao da variavel resposta
-summary(trainning_set_dummies$response)
-summary(testing_set_dummies$response)
+summary(trainning_set$response);prop.table(table(trainning_set$response))
+summary(testing_set$response);prop.table(table(testing_set$response))
+
+#--------------------------------------------------------------------------------#
+# 2) Treino do algoritmo de regressao logistica
+
+modelo <- glm(data = trainning_set, 
+                   formula = response ~ .,
+                   family = binomial(link="logit"))
+modelo
+summary(modelo)
+
+# Modelo FULL
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 517.07  on 586  degrees of freedom
+# AIC: 615.07
+
+#--------------------------------------------------------------------------------#
+#                      MODELO VARIAVEIS INTUITIVAS
+#--------------------------------------------------------------------------------#
+
+set.seed(123) # garantindo reprodutibilidade da amostra
+
+index_treino_2 <- createDataPartition(y = dd_intuitivo$response, p = 0.7, list = F)
+trainning_set_2 <- dd_intuitivo[index_treino_2, ] # base de treino: 70%
+testing_set_2  <- dd_intuitivo[-index_treino_2, ] # base de teste: 30%
+
+# Avaliando a distribuicao da variavel resposta
+summary(trainning_set_2$response);prop.table(table(trainning_set_2$response))
+summary(testing_set_2$response);prop.table(table(testing_set_2$response))
 
 #--------------------------------------------------------------------------------#
 # 5) Treino do algoritmo de regressao logistica
 
-modelo_dummies <- glm(data = trainning_set_dummies, 
+modelo_2 <- glm(data = trainning_set_2, 
                formula = response ~ .,
                family = binomial(link="logit"))
-modelo_dummies
+modelo_2
 
 # Determinando os coeficientes das variaveis explicativas
-summary(modelo_dummies)
+summary(modelo_2)
 
-# MODELO BRUTO COM DUMMIES
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
-# Modelo FULL
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
+# MODELO 2 -VARIAVEIS INTUITIVAS
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 538.36  on 599  degrees of freedom
+# AIC: 610.36
 
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
@@ -758,8 +867,11 @@ summary(modelo_dummies)
 # 3) Avaliar correlação de multicolinearidade
 
 library(car)
-round(vif(modelo_full),2)
-round(vif(modelo_dummies),2)
+# correlacao modelo full
+round(vif(modelo),2)
+
+# correlacao modelo intuitivo
+round(vif(modelo_2),2)
 
 # https://www.statisticshowto.com/variance-inflation-factor/
 # O calculo do vif nao encontrou correlacao, geralmente valores > 5 de VIF indicam correlacao
@@ -771,6 +883,24 @@ round(vif(modelo_dummies),2)
 # Greater than 5 = highly correlated.
 # ------------------------------------------
 
+# MODELO FULL
+# ------------------------------------------
+# - history_A32 =  6.60
+# - employment_A72 = 5.35 
+# - employment_A73 = 7.38 
+# - employment_A75 = 5.70  
+# - pers_status_A93 = 5.19
+# - job_A172 = 13.17
+# - job_A173 = 16.23
+# - job_A174 =  7.21
+
+# MODELO INTUITIVO
+# ------------------------------------------
+# - history_A32 =  5.71
+# - employment_A73 = 5.52
+
+# MODELOS ANTERIORES - COM OUTLIERS
+# ------------------------------------------
 # 6 - history_A32 = 7.31
 # 8 - history_A34 = 5.30
 # 24- employment_A73 = 6.24
@@ -780,160 +910,100 @@ round(vif(modelo_dummies),2)
 # 44- job_A173 = 13.96
 # 45- job_A174 =  7.85
 
-
-set.seed(123) # garantindo reprodutibilidade da amostra
+# ------------------------------------------
+# ------------------------------------------
+# ------------------------------------------
 
 # Removendo as altas correlações
 names(trainning_set)
-trainning_set = trainning_set_dummies[,-c(6,8,24,26,29,43,44,45) ]
-names(trainning_set)
+trainning_set_fit = trainning_set[,-c(6,23,24,26,29,43,44,45) ]
+names(trainning_set_fit)
+
+names(trainning_set_2)
+trainning_set_2_fit = trainning_set_2[,-c(3,7) ]
+names(trainning_set_2_fit)
+
+set.seed(123) # garantindo reprodutibilidade da amostra
 
 # treinando novamente sem correlacoes
-modelo_manual <- glm(data = trainning_set, formula = response ~ .,family = binomial(link="logit"))
-modelo_manual
-summary(modelo_manual)
+modelo_fit <- glm(data = trainning_set_fit, formula = response ~ .,family = binomial(link="logit"))
+modelo_fit
+summary(modelo_fit)
 
+# Modelo FULL FIT - VIF
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 530.17  on 594  degrees of freedom
+# AIC: 612.17
 
-# MODELO MANUAL Remocao do VIF Manualmente
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 639.61  on 659  degrees of freedom
-# AIC: 721.61
+set.seed(123) # garantindo reprodutibilidade da amostra
 
-# MODELO BRUTO COM DUMMIES
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
+# treinando novamente sem correlacoes
+modelo_2_fit <- glm(data = trainning_set_2_fit, formula = response ~ .,family = binomial(link="logit"))
+modelo_2_fit
+summary(modelo_2_fit)
 
-# Modelo FULL
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
+# MODELO 2 - VARIAVEIS INTUITIVAS FIT - VIF
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 565.31  on 607  degrees of freedom
+# AIC: 621.31
 
 #--------------------------------------------------------------------------------#
 # 4) Refinando o ajuste atraves do processo stepwise
 
 library(MASS)
-?stepAIC
 set.seed(123) # garantindo reprodutibilidade da amostra
-modelo_fit_STEP = stepAIC(modelo_dummies, direction = 'both', trace = TRUE)
-modelo_fit_STEP
+modelo_STEP = stepAIC(modelo, direction = 'both', trace = TRUE)
+modelo_STEP
 
 # Determinando os coeficientes das variaveis explicativas
-summary(modelo_fit_STEP)
+summary(modelo_STEP)
 
-# MODELO STEP WISE de Dummies
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 636.36  on 674  degrees of freedom
-# AIC: 688.36
+# MODELO STEP WISE
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 526.24  on 608  degrees of freedom
+# AIC: 580.24
 
-# MODELO MANUAL Remocao do VIF Manualmente
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 639.61  on 659  degrees of freedom
-# AIC: 721.61
+# MODELO 2 -VARIAVEIS INTUITIVAS
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 538.36  on 599  degrees of freedom
+# AIC: 610.36
 
-# MODELO BRUTO COM DUMMIES
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
-# Modelo FULL
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
-#--------------------------------------------------------------------------------#
-#                      MODELO  VARIAVEIS INTUITIVO
-#--------------------------------------------------------------------------------#
-
-# garantindo reprodutibilidade da amostra
-set.seed(123) 
-
-#--------------------------------------------------------------------------------#
-# 1) Divisao de Dataset - Treino e Teste
-str(dd_intuitivo)
-index_treino_intuitivo <- createDataPartition(y = dd_intuitivo$response, p = 0.7, list = F)
-trainning_set_intuitivo <- dd_intuitivo[index_treino_intuitivo, ] # base de treino: 70%
-testing_set_intuitivo <- dd_intuitivo[-index_treino_intuitivo, ] # base de teste: 30%
-
-# Avaliando a distribuicao da variavel resposta
-summary(trainning_set_intuitivo$response)
-summary(testing_set_intuitivo$response)
-
-#--------------------------------------------------------------------------------#
-# 2) Treino do algoritmo de regressao logistica
-modelo_intuitivo <- glm(data = trainning_set_intuitivo, 
-                   formula = response ~ .,
-                   family = binomial(link="logit"))
-modelo_intuitivo
-summary(modelo_intuitivo)
-
-# MODELO VARIAVEIS INTUITIVAS
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 657.69  on 665  degrees of freedom
-# AIC: 727.69
-
-# MODELO STEP WISE de Dummies
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 636.36  on 674  degrees of freedom
-# AIC: 688.36
-
-# MODELO MANUAL Remocao do VIF Manualmente
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 639.61  on 659  degrees of freedom
-# AIC: 721.61
-
-# MODELO BRUTO COM DUMMIES
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
+# Modelo FULL FIT - VIF
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 530.17  on 594  degrees of freedom
+# AIC: 612.17
 
 # Modelo FULL
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 517.07  on 586  degrees of freedom
+# AIC: 615.07
+
+# MODELO 2 - VARIAVEIS INTUITIVAS FIT - VIF
+# Null deviance: 757.17  on 634  degrees of freedom
+# Residual deviance: 565.31  on 607  degrees of freedom
+# AIC: 621.31
+
+# MODELOS -- SEM REMOVER OUTLIERS
 # Null deviance: 855.21  on 699  degrees of freedom
 # Residual deviance: 627.19  on 651  degrees of freedom
 # AIC: 725.19
+
+
 
 #--------------------------------------------------------------------------------#
-# 4) Refinando o ajuste do MODELO INTUITIVO atraves do processo stepwise
-
-library(MASS)
-?stepAIC
-set.seed(123)# garantindo reprodutibilidade da amostra
-modelo_fit_STEP_intuitivo = stepAIC(modelo_intuitivo, direction = 'both', trace = TRUE)
-modelo_fit_STEP_intuitivo
-
-# Determinando os coeficientes das variaveis explicativas
-summary(modelo_fit_STEP_intuitivo)
-
-# MODELO STEP WISE de Intuitivo
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 665.71  on 673  degrees of freedom
-# AIC: 719.71
-
-# MODELO VARIAVEIS INTUITIVAS
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 657.69  on 665  degrees of freedom
-# AIC: 727.69
-
-# MODELO STEP WISE de Dummies
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 636.36  on 674  degrees of freedom
-# AIC: 688.36
-
-# MODELO MANUAL Remocao do VIF Manualmente
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 639.61  on 659  degrees of freedom
-# AIC: 721.61
-
-# MODELO BRUTO COM DUMMIES
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
-
-# Modelo FULL
-# Null deviance: 855.21  on 699  degrees of freedom
-# Residual deviance: 627.19  on 651  degrees of freedom
-# AIC: 725.19
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#                               MODELO FINAL
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+# MODELO STEP WISE 
+# AIC: 580.24
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+MODELO = modelo_STEP
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------#
 #                               PREDIÇÕES
@@ -942,29 +1012,24 @@ summary(modelo_fit_STEP_intuitivo)
 
 # Verficamos Quantidade de variáveis X probabilidade (qtd variáveis) em explicar os bons pagadores com 
 
-# MODELO FULL
-Y_PROB_TRAIN <- predict(modelo_full, type = 'response') 
-Y_PROB_TEST  <- predict(modelo_full, newdata = testing_set_full, type = 'response')
+# MODELO STEP
+Y_PROB_TRAIN <- predict(MODELO, type = 'response') 
+Y_PROB_TEST  <- predict(MODELO, newdata = testing_set, type = 'response')
 head(Y_PROB_TRAIN)
 
-# MODELO DUMMIES
-Y_PROB_TRAIN <- predict(modelo_dummies, type = 'response') 
-Y_PROB_TEST  <- predict(modelo_dummies, newdata = testing_set_dummies, type = 'response')
+# MODELO 2 - VARIAVEIS INTUITIVAS
+Y_PROB_TRAIN <- predict(modelo_2, type = 'response') 
+Y_PROB_TEST  <- predict(modelo_2, newdata = testing_set_2, type = 'response')
 head(Y_PROB_TRAIN)
 
-# MODELO MANUAL
-Y_PROB_TRAIN_STEP <- predict(modelo_manual, type = 'response')  
-Y_PROB_TEST_STEP  <- predict(modelo_manual, newdata = testing_set_dummies, type = 'response')
+# MODELO FULL FIT VIF
+Y_PROB_TRAIN_STEP <- predict(modelo_fit, type = 'response')  
+Y_PROB_TEST_STEP  <- predict(modelo_fit, newdata = testing_set, type = 'response')
 head(Y_PROB_TRAIN_STEP)
 
-# MODELO STEP WISE
-Y_PROB_TRAIN_STEP <- predict(modelo_fit_STEP, type = 'response')  
-Y_PROB_TEST_STEP  <- predict(modelo_fit_STEP, newdata = testing_set_dummies, type = 'response')
-head(Y_PROB_TRAIN_STEP)
-
-# MODELO INTUITIVO
-Y_PROB_TRAIN_STEP <- predict(modelo_intuitivo, type = 'response')  
-Y_PROB_TEST_STEP  <- predict(modelo_intuitivo, newdata = testing_set_intuitivo, type = 'response')
+# MODELO INTUITIVO FIT VIF
+Y_PROB_TRAIN_STEP <- predict(modelo_2_fit, type = 'response')  
+Y_PROB_TEST_STEP  <- predict(modelo_2_fit, newdata = testing_set_2, type = 'response')
 head(Y_PROB_TRAIN_STEP)
 
 # MODELO STEP WISE INTUITITO
@@ -981,12 +1046,6 @@ val.prob(Y_PROB_TRAIN,
 # p valor > 5%, nao podemos rejeitar a hipotese nula
 
 
-#-------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
-#                               MODELO FINAL
-# Todos os modelos tem resultados aproximados, entao o modelo final elegido foi 
-#--------------------------------------------------------------------------------#
-MODEL = modelo_full
 
 
 #--------------------------------------------------------------------------------#
@@ -1096,6 +1155,7 @@ graphics.off()
 
 #--------------------------------------------------------------------------------#
 # 8) Curva ROC
+par(mfrow=c(1,1))
 
 library(pROC)
 ROC1 <- roc(trainning_set_full$response,Y_PROB_TRAIN)
@@ -1112,9 +1172,6 @@ lines(X1, Y1, lwd = 3, lty = 1, col = 'tomato3')
 lines(X2, Y2, lwd = 3, lty = 1, col = 'cyan3') 
 abline(0, 1, lty = 2)
 legend('bottomright',c('TRAIN SET','TEST SET'), lty = 1, col = c('tomato3','cyan3'))
-
-
-
 
 
 #--------------------------------------------------------------------------------#

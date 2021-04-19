@@ -429,7 +429,7 @@ f = factor(dd$employment)
 levels(f)
 levels(f) = c("desempregado", "x < 1 year", "1 <= x < 4 years", 
               "4 <= x < 7 years", "x >= 7 years")
-plot(f, ylim = c(0,350), main = "Tempo empregado", col = 4)
+# plot(f, ylim = c(0,350), main = "Tempo empregado", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Tempo empregado', 
@@ -456,7 +456,7 @@ f = factor(dd$pers_status)
 levels(f)
 levels(f) = c("Masc. separado", "Fem. separada/casada", "Masc. solteiro", 
               "Masc. casado/viúvos", "Fem. solteira")
-plot(f, ylim = c(0,600), main = "Estado Civil e Sexo", col = 4)
+# plot(f, ylim = c(0,600), main = "Estado Civil e Sexo", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Estado Civil e Sexo', 
@@ -480,7 +480,7 @@ dfSummary(dd$guarantor)
 f = factor(dd$guarantor)
 levels(f)
 levels(f) = c("nenhum", "co-aplicante", "fiador")
-plot(f, ylim = c(0,1000), main = "Fiador", col = 4)
+# plot(f, ylim = c(0,1000), main = "Fiador", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Fiadores', 
@@ -513,7 +513,7 @@ dfSummary(dd$real_state)
 f = factor(dd$real_state)
 levels(f)
 levels(f) = c("imóveis", "empresa", "carros+", "desconhecido")
-plot(f, ylim = c(0,350), main = "Propriedades", col = 4)
+# plot(f, ylim = c(0,350), main = "Propriedades", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Propriedades', 
@@ -537,7 +537,7 @@ dfSummary(dd$other_installment)
 f = factor(dd$other_installment)
 levels(f)
 levels(f) = c("outros bancos", "lojas", "nenhum")
-plot(f, ylim = c(0,800), main = "Outros empréstimos", col = 4)
+# plot(f, ylim = c(0,800), main = "Outros empréstimos", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Outros empréstimos', 
@@ -568,7 +568,7 @@ dfSummary(dd$housing)
 f = factor(dd$housing)
 levels(f)
 levels(f) = c("alugada", "própria", "sem custo")
-plot(f, ylim = c(0,700), main = "Tipo de Residência", col = 4)
+# plot(f, ylim = c(0,700), main = "Tipo de Residência", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Tipo de Residência', 
@@ -603,7 +603,7 @@ levels(f)
 levels(f) = c("Desempregado\nNão especializado\nNão residente", 
               "Não especializado\nResidente", "Especializado\nOficial",
               "Gerência\nEmpresário\nAltamente Qualificado\nOficial")
-plot(f, ylim = c(-50,700), main = "Emprego", col = 4)
+# plot(f, ylim = c(-50,700), main = "Emprego", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Emprego', 
@@ -635,7 +635,7 @@ dfSummary(dd$telephone)
 f = factor(dd$telephone)
 levels(f)
 levels(f) = c("Não", "Sim (registrada)")
-plot(f, ylim = c(0,600), main = "Possui linha telefônica", col = 4)
+# plot(f, ylim = c(0,600), main = "Possui linha telefônica", col = 4)
 barplot(table(dd$response, f), 
         data = dd_intuitivo,
         main = 'Possui linha telefônica', 
@@ -823,9 +823,9 @@ modelo
 summary(modelo)
 
 # Modelo FULL
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 517.07  on 586  degrees of freedom
-# AIC: 615.07
+# Null deviance: 676.63  on 581  degrees of freedom
+# Residual deviance: 445.18  on 533  degrees of freedom
+# AIC: 543.18
 
 #--------------------------------------------------------------------------------#
 #                      MODELO VARIAVEIS INTUITIVAS
@@ -853,9 +853,9 @@ modelo_2
 summary(modelo_2)
 
 # MODELO 2 -VARIAVEIS INTUITIVAS
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 538.36  on 599  degrees of freedom
-# AIC: 610.36
+# Null deviance: 676.63  on 581  degrees of freedom
+# Residual deviance: 470.44  on 546  degrees of freedom
+# AIC: 542.44
 
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
@@ -885,30 +885,32 @@ round(vif(modelo_2),2)
 
 # MODELO FULL
 # ------------------------------------------
-# - history_A32 =  6.60
-# - employment_A72 = 5.35 
-# - employment_A73 = 7.38 
-# - employment_A75 = 5.70  
-# - pers_status_A93 = 5.19
-# - job_A172 = 13.17
-# - job_A173 = 16.23
-# - job_A174 =  7.21
+# 6- history_A32 =  7.61
+# 8- history_A34 =  5.00
+# 23- employment_A72 = 6.05
+# 24- employment_A73 = 8.22
+# 26- employment_A75 = 6.39  
+# 29- pers_status_A93 = 5.19
+# 43- job_A172 = 18.92
+# 44- job_A173 = 22.96
+# 45- job_A174 = 10.38
 
 # MODELO INTUITIVO
 # ------------------------------------------
-# - history_A32 =  5.71
-# - employment_A73 = 5.52
+# - history_A32 =  7.23
+# - employment_A73 = 6.40
+# - employment_A75 = 5.22
 
 # MODELOS ANTERIORES - COM OUTLIERS
 # ------------------------------------------
-# 6 - history_A32 = 7.31
-# 8 - history_A34 = 5.30
-# 24- employment_A73 = 6.24
-# 26- employment_A75 = 5.27
-# 29- pers_status_A93 = 5.13
-# 43- job_A172 = 10.08
-# 44- job_A173 = 13.96
-# 45- job_A174 =  7.85
+# history_A32 = 7.31
+# history_A34 = 5.30
+# employment_A73 = 6.24
+# employment_A75 = 5.27
+# pers_status_A93 = 5.13
+# job_A172 = 10.08
+# job_A173 = 13.96
+# ob_A174 =  7.85
 
 # ------------------------------------------
 # ------------------------------------------
@@ -916,12 +918,8 @@ round(vif(modelo_2),2)
 
 # Removendo as altas correlações
 names(trainning_set)
-trainning_set_fit = trainning_set[,-c(6,23,24,26,29,43,44,45) ]
+trainning_set_fit = trainning_set[,-c(6,8,23,24,26,29,43,44,45)]
 names(trainning_set_fit)
-
-names(trainning_set_2)
-trainning_set_2_fit = trainning_set_2[,-c(3,7) ]
-names(trainning_set_2_fit)
 
 set.seed(123) # garantindo reprodutibilidade da amostra
 
@@ -931,21 +929,9 @@ modelo_fit
 summary(modelo_fit)
 
 # Modelo FULL FIT - VIF
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 530.17  on 594  degrees of freedom
-# AIC: 612.17
-
-set.seed(123) # garantindo reprodutibilidade da amostra
-
-# treinando novamente sem correlacoes
-modelo_2_fit <- glm(data = trainning_set_2_fit, formula = response ~ .,family = binomial(link="logit"))
-modelo_2_fit
-summary(modelo_2_fit)
-
-# MODELO 2 - VARIAVEIS INTUITIVAS FIT - VIF
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 565.31  on 607  degrees of freedom
-# AIC: 621.31
+# Null deviance: 676.63  on 581  degrees of freedom
+# Residual deviance: 474.32  on 542  degrees of freedom
+# AIC: 554.32
 
 #--------------------------------------------------------------------------------#
 # 4) Refinando o ajuste atraves do processo stepwise
@@ -959,29 +945,19 @@ modelo_STEP
 summary(modelo_STEP)
 
 # MODELO STEP WISE
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 526.24  on 608  degrees of freedom
-# AIC: 580.24
+# Null deviance: 676.63  on 581  degrees of freedom
+# Residual deviance: 461.44  on 556  degrees of freedom
+# AIC: 513.44
 
 # MODELO 2 -VARIAVEIS INTUITIVAS
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 538.36  on 599  degrees of freedom
-# AIC: 610.36
-
-# Modelo FULL FIT - VIF
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 530.17  on 594  degrees of freedom
-# AIC: 612.17
+# Null deviance: 676.63  on 581  degrees of freedom
+# Residual deviance: 470.44  on 546  degrees of freedom
+# AIC: 542.44
 
 # Modelo FULL
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 517.07  on 586  degrees of freedom
-# AIC: 615.07
-
-# MODELO 2 - VARIAVEIS INTUITIVAS FIT - VIF
-# Null deviance: 757.17  on 634  degrees of freedom
-# Residual deviance: 565.31  on 607  degrees of freedom
-# AIC: 621.31
+# Null deviance: 676.63  on 581  degrees of freedom
+# Residual deviance: 445.18  on 533  degrees of freedom
+# AIC: 543.18
 
 # MODELOS -- SEM REMOVER OUTLIERS
 # Null deviance: 855.21  on 699  degrees of freedom
@@ -989,21 +965,15 @@ summary(modelo_STEP)
 # AIC: 725.19
 
 
+# library(VGAM)
+# ?vglm
+# modelo_multi <- VGAM::vglm(formula = response ~ ., 
+#                      family = multinomial, 
+#                      data = trainning_set_2)
+# 
+# modelo_multi
+# summary(modelo_multi)
 
-#--------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
-#                               MODELO FINAL
-#--------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
-# MODELO STEP WISE 
-# AIC: 580.24
-#--------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
-MODELO = modelo_STEP
-#--------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------#
 #                               PREDIÇÕES
@@ -1012,70 +982,98 @@ MODELO = modelo_STEP
 
 # Verficamos Quantidade de variáveis X probabilidade (qtd variáveis) em explicar os bons pagadores com 
 
-# MODELO STEP
-Y_PROB_TRAIN <- predict(MODELO, type = 'response') 
-Y_PROB_TEST  <- predict(MODELO, newdata = testing_set, type = 'response')
-head(Y_PROB_TRAIN)
-
 # MODELO 2 - VARIAVEIS INTUITIVAS
 Y_PROB_TRAIN <- predict(modelo_2, type = 'response') 
 Y_PROB_TEST  <- predict(modelo_2, newdata = testing_set_2, type = 'response')
 head(Y_PROB_TRAIN)
 
-# MODELO FULL FIT VIF
-Y_PROB_TRAIN_STEP <- predict(modelo_fit, type = 'response')  
-Y_PROB_TEST_STEP  <- predict(modelo_fit, newdata = testing_set, type = 'response')
+# MODELO STEP WISE
+Y_PROB_TRAIN_STEP <- predict(modelo_STEP, type = 'response')  
+Y_PROB_TEST_STEP  <- predict(modelo_STEP, newdata = testing_set, type = 'response')
 head(Y_PROB_TRAIN_STEP)
 
-# MODELO INTUITIVO FIT VIF
-Y_PROB_TRAIN_STEP <- predict(modelo_2_fit, type = 'response')  
-Y_PROB_TEST_STEP  <- predict(modelo_2_fit, newdata = testing_set_2, type = 'response')
-head(Y_PROB_TRAIN_STEP)
-
-# MODELO STEP WISE INTUITITO
-Y_PROB_TRAIN_STEP <- predict(modelo_fit_STEP_intuitivo, type = 'response')  
-Y_PROB_TEST_STEP  <- predict(modelo_fit_STEP_intuitivo, newdata = testing_set_intuitivo, type = 'response')
-head(Y_PROB_TRAIN_STEP)
-
-# [EXTRA] Verificando a aderencia do ajuste logistico (teste Spiegelhalter)
-library(rms)
-?val.prob
-val.prob(Y_PROB_TRAIN, 
-         ifelse(trainning_set_intuitivo$response == 'Good', 1, 0), 
-         smooth = F)[c('S:z','S:p')]
-# p valor > 5%, nao podemos rejeitar a hipotese nula
 
 
+#--------------------------------------------------------------------------------#
+# 8) Curva ROC
+
+# MODELO STEP WISE
+par(mfrow=c(1,2))
+
+library(pROC)
+ROC1 <- roc(trainning_set$response,Y_PROB_TRAIN_STEP)
+Y1   <- ROC1$sensitivities
+X1   <- 1 - ROC1$specificities
+
+ROC2 <- roc(testing_set$response,Y_PROB_TEST_STEP)
+Y2   <- ROC2$sensitivities
+X2   <- 1 - ROC2$specificities
+
+plot(X1,Y1, type ="n", cex.axis = 1.2, cex = 0.5,
+     xlab = '1 - ESPECIFICIDADE', ylab = 'SENSITIVIDADE')
+lines(X1, Y1, lwd = 3, lty = 1, col = 'tomato3') 
+lines(X2, Y2, lwd = 3, lty = 1, col = 'cyan3') 
+abline(0, 1, lty = 2)
+legend('bottomright',c('TRAIN SET','TEST SET'), lty = 1, col = c('tomato3','cyan3'))
+
+# MODELO 2 - VARIAVEIS INTUITIVAS
+par(mfrow=c(1,1))
+
+library(pROC)
+ROC1 <- roc(trainning_set_2$response,Y_PROB_TRAIN)
+Y1   <- ROC1$sensitivities
+X1   <- 1 - ROC1$specificities
+
+ROC2 <- roc(testing_set_2$response,Y_PROB_TEST)
+Y2   <- ROC2$sensitivities
+X2   <- 1 - ROC2$specificities
+
+plot(X1,Y1, type ="n", cex.axis = 1.2, cex = 0.5,
+     xlab = '1 - ESPECIFICIDADE', ylab = 'SENSITIVIDADE')
+lines(X1, Y1, lwd = 3, lty = 1, col = 'tomato3') 
+lines(X2, Y2, lwd = 3, lty = 1, col = 'cyan3') 
+abline(0, 1, lty = 2)
+legend('bottomright',c('TRAIN SET','TEST SET'), lty = 1, col = c('tomato3','cyan3'))
 
 
 #--------------------------------------------------------------------------------#
 # 5) Avaliando a performance dos modelos e existencia de overfitting
 
-# Regressao full
+# Regressao variaveis intuitivas
 library(hmeasure) 
-HMeasure(trainning_set_full$response,Y_PROB_TRAIN)$metrics
-HMeasure(testing_set_full$response, Y_PROB_TEST)$metrics
-testing_set_full$response
+HMeasure(trainning_set$response,Y_PROB_TRAIN)$metrics
+HMeasure(testing_set$response, Y_PROB_TEST)$metrics
+# testing_set_2$response
 
 # Regressao com stepwise
-HMeasure(trainning_set_dummies$response,Y_PROB_TRAIN_STEP)$metrics
-HMeasure(testing_set_dummies$response, Y_PROB_TRAIN_STEP)$metrics
-testing_set_dummies$response
+HMeasure(trainning_set$response,Y_PROB_TRAIN_STEP)$metrics
+HMeasure(testing_set$response, Y_PROB_TEST_STEP)$metrics
+# testing_set$response
 
 # Os resultados sao muito parecidos, porem a regressao com stepwise resultou em
 # um modelo "mais enxuto", com mesma performance
 
-# Modelo final
-# Os resultados sao muito parecidos, porem a regressao com stepwise resultou em
-# um modelo "mais enxuto", i.e. com menos vari?veis e com mesma performance
-MODEL <- modelo_full
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#                               MODELO FINAL
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+# MODELO STEP WISE 
+# AIC: 513.44
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+MODELO_FINAL = modelo_STEP
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------#
 # 6) Importancia das variaveis (Modelo final)
 
 #https://cran.r-project.org/web/packages/dominanceanalysis/vignettes/da-logistic-regression.html
 library(car)
-anova(MODEL, test= "Chisq")
+# anova(MODELO_FINAL, test= "Chisq")
 
 #--------------------------------------------------------------------------------#
 # 7) Inspecao dos valores previstos vs observados (modelo final)
@@ -1085,15 +1083,18 @@ anova(MODEL, test= "Chisq")
 # Label observado
 Y_OBS <- testing_set$response
 head(Y_OBS)
-head(Y_PROB_TEST)
+head(Y_PROB_TEST_STEP)
 levels(Y_OBS)
 
 # testando o ponto de corte
-referencia <- factor(ifelse(Y_PROB_TEST > 0.74, 'Bad', 'Good'),
+referencia <- factor(ifelse(Y_PROB_TEST_STEP > 0.89, 'Bad', 'Good'),
                   levels = levels(Y_OBS),
                   labels = c('Good','Bad')) 
-
+confusionMatrix(data = Y_OBS, reference = referencia, positive = 'Good')
 confusao = confusionMatrix(data = Y_OBS, reference = referencia, positive = 'Good')
+
+# VALOR TOTAL PREVISTO PELO MODELO
+(confusao$table[1] * 100) + (confusao$table[3] * (-500) ) + (confusao$table[4] * 0 ) + (confusao$table[2] * (-100) )
 
 # CORTE em 70%
 # Especif.	73,33% capacidade em encontrar 0s na população
@@ -1101,12 +1102,6 @@ confusao = confusionMatrix(data = Y_OBS, reference = referencia, positive = 'Goo
 # Precisão	taxa de acerto de 1s
 # Acurácia	74,07% acertos total
 
-resultado = 0
-resultado = resultado + 205 * 100 
-resultado = resultado + 5 * (-500) 
-resultado = resultado + 17 * 0 
-resultado = resultado + 73 * (-100) 
-resultado
 
 # True Positive TP =  $100 ... para um cliente que paga o empréstimo
 # False Negative FN = -$100 ... representa uma perda potencial (era mal pagador mas poderia pagar)
@@ -1153,25 +1148,7 @@ hist(AUX$Y_PROB, breaks = 20, xlim = c(0,1),
 
 graphics.off()
 
-#--------------------------------------------------------------------------------#
-# 8) Curva ROC
-par(mfrow=c(1,1))
 
-library(pROC)
-ROC1 <- roc(trainning_set_full$response,Y_PROB_TRAIN)
-Y1   <- ROC1$sensitivities
-X1   <- 1 - ROC1$specificities
-
-ROC2 <- roc(testing_set_full$response,Y_PROB_TEST)
-Y2   <- ROC2$sensitivities
-X2   <- 1 - ROC2$specificities
-
-plot(X1,Y1, type ="n", cex.axis = 1.2, cex = 0.5,
-     xlab = '1 - ESPECIFICIDADE', ylab = 'SENSITIVIDADE')
-lines(X1, Y1, lwd = 3, lty = 1, col = 'tomato3') 
-lines(X2, Y2, lwd = 3, lty = 1, col = 'cyan3') 
-abline(0, 1, lty = 2)
-legend('bottomright',c('TRAIN SET','TEST SET'), lty = 1, col = c('tomato3','cyan3'))
 
 
 #--------------------------------------------------------------------------------#
